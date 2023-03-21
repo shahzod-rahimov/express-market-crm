@@ -2,17 +2,17 @@ import { IsDateString, IsNumber, IsString } from 'class-validator';
 
 export class CreateOperationDto {
   @IsNumber()
-  order_id: number;
+  readonly order_id: number;
 
   @IsNumber()
-  status_id: number;
+  readonly status_id: number;
 
   @IsDateString()
-  operation_date: Date;
+  readonly operation_date: Date;
 
   @IsNumber()
-  admin_id: number;
+  readonly admin_id: number;
 
   @IsString()
-  description: string;
+  readonly description: string;
 }

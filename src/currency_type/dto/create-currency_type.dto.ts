@@ -2,8 +2,8 @@ import { IsString } from 'class-validator';
 
 export class CreateCurrencyTypeDto {
   @IsString()
-  name: string;
+  readonly name: string;
 
   @IsString()
-  description: string;
+  readonly description: string;
 }

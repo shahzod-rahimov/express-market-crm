@@ -6,6 +6,7 @@ import { OrderModule } from './order/order.module';
 import { OperationModule } from './operation/operation.module';
 import { StatusModule } from './status/status.module';
 import { CurrencyTypeModule } from './currency_type/currency_type.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { CurrencyTypeModule } from './currency_type/currency_type.module';
     OperationModule,
     StatusModule,
     CurrencyTypeModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

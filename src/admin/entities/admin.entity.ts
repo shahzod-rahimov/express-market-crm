@@ -1,4 +1,4 @@
-import { Column, DataType, Table , Model} from 'sequelize-typescript';
+import { Column, DataType, Table, Model } from 'sequelize-typescript';
 
 @Table({ tableName: 'admins' })
 export class Admin extends Model {
@@ -31,10 +31,10 @@ export class Admin extends Model {
   @Column({ type: DataType.STRING })
   hashed_token: string;
 
-  @Column({ type: DataType.BOOLEAN })
+  @Column({ type: DataType.BOOLEAN, defaultValue: false })
   is_creator: boolean;
 
-  @Column({ type: DataType.BOOLEAN })
+  @Column({ type: DataType.BOOLEAN, defaultValue: false })
   is_active: boolean;
 
   @Column({ type: DataType.TEXT })

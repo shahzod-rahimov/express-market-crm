@@ -2,26 +2,26 @@ import { IsNumber, IsPhoneNumber, IsString } from 'class-validator';
 
 export class CreateOrderDto {
   @IsString()
-  order_unique_id: string;
+  readonly order_unique_id: string;
 
   @IsString()
-  full_name: string;
+  readonly full_name: string;
 
   @IsPhoneNumber('UZ')
-  phone_number: string;
+  readonly phone_number: string;
 
   @IsString()
-  product_link: string;
+  readonly product_link: string;
 
   @IsNumber()
-  summa: number;
+  readonly summa: number;
 
   @IsNumber()
-  currency_type_id: number;
+  readonly currency_type_id: number;
 
   @IsString()
-  truck: string;
+  readonly truck: string;
 
   @IsString()
-  description: string;
+  readonly description: string;
 }
