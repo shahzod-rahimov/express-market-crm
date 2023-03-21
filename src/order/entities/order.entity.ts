@@ -10,8 +10,8 @@ export class Order extends Model {
   })
   id: number;
 
-  @Column({ type: DataType.INTEGER })
-  order_unique_id: number;
+  @Column({ type: DataType.STRING })
+  order_unique_id: string;
 
   @Column({ type: DataType.STRING })
   full_name: string;

@@ -1,26 +1,54 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
 import { CreateOperationDto } from './dto/create-operation.dto';
 import { UpdateOperationDto } from './dto/update-operation.dto';
+import { Operation } from './entities/operation.entity';
 
 @Injectable()
 export class OperationService {
+  constructor(
+    @InjectModel(Operation) private operationModel: typeof Operation,
+  ) {}
   create(createOperationDto: CreateOperationDto) {
-    return 'This action adds a new operation';
+    return this.operationModel.create({ ...createOperationDto });
   }
 
   findAll() {
-    return `This action returns all operation`;
+    return this.operationModel.findAll({});
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} operation`;
+  async findOne(id: number) {
+    const operation = await this.operationModel.findOne({ where: { id } });
+    if (!operation) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+    return operation;
   }
 
-  update(id: number, updateOperationDto: UpdateOperationDto) {
-    return `This action updates a #${id} operation`;
+  async update(id: number, updateOperationDto: UpdateOperationDto) {
+    const updatedOperation = await this.operationModel.update(
+      updateOperationDto,
+      {
+        where: { id },
+      },
+    );
+
+    if (!updatedOperation[0]) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+
+    throw new HttpException('Updated', HttpStatus.OK);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} operation`;
+  async remove(id: number) {
+    const deletedOperation = await this.operationModel.destroy({
+      where: { id },
+    });
+
+    if (!deletedOperation) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+
+    throw new HttpException('Deleted', HttpStatus.OK);
   }
 }
