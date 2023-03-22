@@ -7,6 +7,8 @@ import { OperationModule } from './operation/operation.module';
 import { StatusModule } from './status/status.module';
 import { CurrencyTypeModule } from './currency_type/currency_type.module';
 import { AuthModule } from './auth/auth.module';
+import { AccessTokenGuard } from './common/guards';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -27,6 +29,12 @@ import { AuthModule } from './auth/auth.module';
     StatusModule,
     CurrencyTypeModule,
     AuthModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AccessTokenGuard,
+    },
   ],
 })
 export class AppModule {}
