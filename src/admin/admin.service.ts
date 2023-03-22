@@ -75,6 +75,15 @@ export class AdminService {
     throw new HttpException('Updated', HttpStatus.OK);
   }
 
+  async updateToken(id: number, token: string) {
+    await this.adminModel.update(
+      { hashed_token: token },
+      {
+        where: { id },
+      },
+    );
+  }
+
   async remove(id: number) {
     const admin = await this.adminModel.destroy({
       where: { id },
