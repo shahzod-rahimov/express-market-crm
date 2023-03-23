@@ -1,31 +1,34 @@
 // import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsPhoneNumber, IsString, Matches } from 'class-validator';
 
 export class CreateAdminDto {
+  @ApiProperty({ example: 'John Doe', description: 'Admin fullname' })
   @IsString()
   readonly full_name: string;
 
+  @ApiProperty({ example: 'johndoe', description: 'Admin username' })
   @IsString()
   @Matches(/^[A-Za-z][A-Za-z0-9_]{3,25}$/)
   readonly user_name: string;
 
+  @ApiProperty({
+    example: 'https://t.me/johndoe',
+    description: 'Admin telegram link',
+  })
   @IsString()
   readonly tg_link: string;
 
+  @ApiProperty({ example: '991234567', description: 'Admin phone number' })
   @IsPhoneNumber('UZ')
   readonly phone_number: string;
-  // @ApiProperty({
-  //   example: 'user1@mail.uz',
-  //   description: 'Foydalanuvchi elektron pochtasi',
-  // })
+
+  @ApiProperty({ example: 'john@gmail.com', description: 'Admin email' })
   @IsString()
   @IsEmail()
   readonly email: string;
 
-  // @ApiProperty({
-  //   example: '1234567',
-  //   description: 'Foydalanuvchi paroli',
-  // })
+  @ApiProperty({ example: '991234567', description: 'Admin password' })
   @IsString()
   readonly hashed_password: string;
 }

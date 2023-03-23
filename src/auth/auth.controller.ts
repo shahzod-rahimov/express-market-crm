@@ -4,11 +4,14 @@ import { AuthService } from './auth.service';
 import { SignInDto } from './dto/signin.dto';
 import { Response } from 'express';
 import { GetCurrentUserId, Public } from '../common/decorators';
-
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @ApiOperation({ summary: 'SignUp Admin' })
+  @ApiResponse({ status: 200, description: 'Return Tokens' })
   @Public()
   @Post('/signup')
   signup(
@@ -18,6 +21,8 @@ export class AuthController {
     return this.authService.signup(signUpDto, res);
   }
 
+  @ApiOperation({ summary: 'SignIn Admin' })
+  @ApiResponse({ status: 200, description: 'Return Tokens' })
   @Public()
   @Post('/signin')
   signin(
@@ -27,6 +32,8 @@ export class AuthController {
     return this.authService.signin(signinDto, res);
   }
 
+  @ApiOperation({ summary: 'Logout Admin' })
+  @ApiResponse({ status: 200 })
   @Post('logout')
   logout(
     @GetCurrentUserId() adminId: number,

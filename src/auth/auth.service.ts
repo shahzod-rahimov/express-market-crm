@@ -77,17 +77,6 @@ export class AuthService {
 
   async logout(adminId: number): Promise<boolean> {
     await this.adminService.updateToken(adminId, null)
-    // await this.prismaService.user.updateMany({
-    //   where: {
-    //     id: +userId,
-    //     hashedRefreshToken: {
-    //       not: null,
-    //     },
-    //   },
-    //   data: {
-    //     hashedRefreshToken: null,
-    //   },
-    // });
     throw new HttpException('Successfully logout', HttpStatus.OK);
   }
 
