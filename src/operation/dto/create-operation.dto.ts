@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsNumber, IsString } from 'class-validator';
+import { IsDateString, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateOperationDto {
   @ApiProperty({ example: '2', description: 'Order ID' })
@@ -22,6 +22,7 @@ export class CreateOperationDto {
     example: 'asdfjgksdjgkjjerdgsngkjdsnfkg',
     description: 'Operation description',
   })
+  @IsOptional()
   @IsString()
   readonly description: string;
 }

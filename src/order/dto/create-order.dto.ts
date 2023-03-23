@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsPhoneNumber, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsPhoneNumber, IsString } from 'class-validator';
 
 export class CreateOrderDto {
   @ApiProperty({ example: '2', description: 'Order unique ID' })
@@ -33,6 +33,7 @@ export class CreateOrderDto {
   @IsString()
   readonly truck: string;
 
+  @IsOptional()
   @ApiProperty({ example: 'qwergffdfgghghrtnjjxc', description: 'Description' })
   @IsString()
   readonly description: string;

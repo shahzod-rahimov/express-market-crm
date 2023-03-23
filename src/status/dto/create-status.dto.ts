@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class CreateStatusDto {
   @ApiProperty({ example: 'active', description: 'Status name' })
@@ -10,6 +10,7 @@ export class CreateStatusDto {
     example: 'asdfgggfdsfggdnmfkjrhgjdfncnvdfkdnj',
     description: 'Status description',
   })
+  @IsOptional()
   @IsString()
   readonly description: string;
 }

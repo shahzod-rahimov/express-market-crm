@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class CreateCurrencyTypeDto {
   @ApiProperty({ example: 'sum', description: 'Currency name' })
@@ -10,6 +10,7 @@ export class CreateCurrencyTypeDto {
     example: 'qwertytasdfgfdcxvcbngfretyujh',
     description: 'Currency description',
   })
+  @IsOptional()
   @IsString()
   readonly description: string;
 }
