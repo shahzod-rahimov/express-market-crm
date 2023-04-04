@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Column, DataType, Table, Model } from 'sequelize-typescript';
 
-@Table({ tableName: 'admins' })
+@Table({ tableName: 'admins', timestamps: false })
 export class Admin extends Model {
   @ApiProperty({ example: '1', description: 'Unikal ID' })
   @Column({
@@ -32,7 +32,10 @@ export class Admin extends Model {
   @Column({ type: DataType.STRING })
   email: string;
 
-  @ApiProperty({ example: 'https://t.me/johndoe', description: 'Admin telegram link' })
+  @ApiProperty({
+    example: 'https://t.me/johndoe',
+    description: 'Admin telegram link',
+  })
   @Column({ type: DataType.STRING })
   tg_link: string;
 
@@ -48,7 +51,13 @@ export class Admin extends Model {
   @Column({ type: DataType.BOOLEAN, defaultValue: false })
   is_active: boolean;
 
-  @ApiProperty({ example: 'qwertyuiopasdfghjklzxcvbnm', description: 'Description' })
+  @ApiProperty({
+    example: 'qwertyuiopasdfghjklzxcvbnm',
+    description: 'Description',
+  })
   @Column({ type: DataType.TEXT })
   description: string;
+
+  @Column({ type: DataType.DATE, defaultValue: new Date() })
+  createdAt: Date;
 }
