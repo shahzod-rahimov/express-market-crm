@@ -14,11 +14,14 @@ export class OperationService {
   }
 
   findAll() {
-    return this.operationModel.findAll({});
+    return this.operationModel.findAll({ include: { all: true } });
   }
 
   async findOne(id: number) {
-    const operation = await this.operationModel.findOne({ where: { id } });
+    const operation = await this.operationModel.findOne({
+      where: { id },
+      include: { all: true },
+    });
     if (!operation) {
       throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
     }

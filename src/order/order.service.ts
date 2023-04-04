@@ -8,16 +8,23 @@ import { Order } from './entities/order.entity';
 export class OrderService {
   constructor(@InjectModel(Order) private orderModel: typeof Order) {}
 
-  create(createOrderDto: CreateOrderDto) {
-    return this.orderModel.create({ ...createOrderDto });
+  async create(createOrderDto: CreateOrderDto) {
+    const order = await this.orderModel.create({ ...createOrderDto });
+
+    order.order_unique_id = (1000 + order.id).toString();
+
+    return order;
   }
 
   findAll() {
-    return this.orderModel.findAll({});
+    return this.orderModel.findAll({ include: { all: true } });
   }
 
   async findOne(id: number) {
-    const order = await this.orderModel.findOne({ where: { id } });
+    const order = await this.orderModel.findOne({
+      where: { id },
+      include: { all: true },
+    });
     if (!order) {
       throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
     }

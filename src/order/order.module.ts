@@ -3,9 +3,10 @@ import { OrderService } from './order.service';
 import { OrderController } from './order.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Order } from './entities/order.entity';
+import { CurrencyType } from '../currency_type/entities/currency_type.entity';
 
 @Module({
-  imports: [SequelizeModule.forFeature([Order])],
+  imports: [SequelizeModule.forFeature([Order, CurrencyType])],
   controllers: [OrderController],
   providers: [OrderService],
 })
