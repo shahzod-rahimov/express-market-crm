@@ -1,13 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  BelongsTo,
-  Column,
-  DataType,
-  ForeignKey,
-  Model,
-  Table,
-} from 'sequelize-typescript';
-import { CurrencyType } from '../../currency_type/entities/currency_type.entity';
+import { Column, DataType, Model, Table } from 'sequelize-typescript';
 
 @Table({ tableName: 'orders' })
 export class Order extends Model {
@@ -47,19 +39,7 @@ export class Order extends Model {
   @Column({ type: DataType.DECIMAL })
   summa: number;
 
-  @ApiProperty({ example: '3', description: 'Currency ID' })
-  @ForeignKey(() => CurrencyType)
-  @Column({ type: DataType.INTEGER })
-  currency_type_id: number;
-
-  @ApiProperty({ example: 'ISUZU', description: 'Truck' })
-  @Column({ type: DataType.STRING })
-  truck: string;
-
   @ApiProperty({ example: 'qwergffdfgghghrtnjjxc', description: 'Description' })
   @Column({ type: DataType.TEXT })
   description: string;
-
-  @BelongsTo(() => CurrencyType)
-  currency_type: CurrencyType;
 }

@@ -4,8 +4,6 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { AdminModule } from './admin/admin.module';
 import { OrderModule } from './order/order.module';
 import { OperationModule } from './operation/operation.module';
-import { StatusModule } from './status/status.module';
-import { CurrencyTypeModule } from './currency_type/currency_type.module';
 import { AuthModule } from './auth/auth.module';
 import { AccessTokenGuard } from './common/guards';
 import { APP_GUARD } from '@nestjs/core';
@@ -26,8 +24,6 @@ import { APP_GUARD } from '@nestjs/core';
     AdminModule,
     OrderModule,
     OperationModule,
-    StatusModule,
-    CurrencyTypeModule,
     AuthModule,
   ],
   providers: [

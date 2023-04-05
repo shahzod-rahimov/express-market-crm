@@ -48,7 +48,7 @@ export class Admin extends Model {
   is_creator: boolean;
 
   @ApiProperty({ example: 'true/false', description: 'Is Admin active' })
-  @Column({ type: DataType.BOOLEAN, defaultValue: false })
+  @Column({ type: DataType.BOOLEAN, defaultValue: true })
   is_active: boolean;
 
   @ApiProperty({

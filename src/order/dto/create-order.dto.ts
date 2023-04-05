@@ -21,15 +21,13 @@ export class CreateOrderDto {
   @IsNumber()
   readonly summa: number;
 
-  @ApiProperty({ example: '3', description: 'Currency ID' })
+  @ApiProperty({
+    example: '1000000',
+    description: 'Product advance payment ',
+  })
   @IsNumber()
   @IsOptional()
-  readonly currency_type_id: number;
-
-  @ApiProperty({ example: 'ISUZU', description: 'Truck' })
-  @IsString()
-  @IsOptional()
-  readonly truck: string;
+  readonly advance_payment: number;
 
   @IsOptional()
   @ApiProperty({ example: 'qwergffdfgghghrtnjjxc', description: 'Description' })

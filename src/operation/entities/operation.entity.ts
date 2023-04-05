@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   BelongsTo,
-  BelongsToMany,
   Column,
   DataType,
   ForeignKey,
@@ -9,11 +8,9 @@ import {
   Table,
 } from 'sequelize-typescript';
 import { Order } from '../../order/entities/order.entity';
-import { CurrencyType } from '../../currency_type/entities/currency_type.entity';
-import { Status } from '../../status/entities/status.entity';
 import { Admin } from '../../admin/entities/admin.entity';
 
-@Table({ tableName: 'operations' })
+@Table({ tableName: 'operations', timestamps: false })
 export class Operation extends Model {
   @ApiProperty({ example: '1', description: 'Unikal ID' })
   @Column({
@@ -32,16 +29,14 @@ export class Operation extends Model {
   @BelongsTo(() => Order)
   order: Order[];
 
-  @ApiProperty({ example: '3', description: 'Status ID' })
-  @ForeignKey(() => Status)
-  @Column({ type: DataType.INTEGER })
-  status_id: number;
+  @ApiProperty({
+    example: '[0 - new, 1 - waited, 2 - end] default - 0',
+    description: '[0 - new, 1 - waited, 2 - end] default - 0',
+  })
+  @Column({ type: DataType.STRING, defaultValue: '0' })
+  status: string;
 
-  @BelongsTo(() => Status)
-  status: Status;
-
-  @ApiProperty({ example: '2023-12-12', description: 'Operation date' })
-  @Column({ type: DataType.DATE })
+  @Column({ type: DataType.DATE, defaultValue: new Date() })
   operation_date: Date;
 
   @ApiProperty({ example: '4', description: 'Admin ID' })

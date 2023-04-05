@@ -3,18 +3,27 @@ import { InjectModel } from '@nestjs/sequelize';
 import { CreateOperationDto } from './dto/create-operation.dto';
 import { UpdateOperationDto } from './dto/update-operation.dto';
 import { Operation } from './entities/operation.entity';
+import { Admin } from '../admin/entities/admin.entity';
+import { Order } from '../order/entities/order.entity';
 
 @Injectable()
 export class OperationService {
   constructor(
     @InjectModel(Operation) private operationModel: typeof Operation,
   ) {}
+  
   create(createOperationDto: CreateOperationDto) {
     return this.operationModel.create({ ...createOperationDto });
   }
 
-  findAll() {
-    return this.operationModel.findAll({ include: { all: true } });
+  async findAll() {
+    return this.operationModel.findAll({
+      attributes: { exclude: ['order_id', 'admin_id'] },
+      include: [
+        { model: Order, attributes: ['order_unique_id'] },
+        { model: Admin, attributes: ['full_name', 'user_name'] },
+      ],
+    });
   }
 
   async findOne(id: number) {

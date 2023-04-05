@@ -27,6 +27,13 @@ export class AuthService {
       throw new ForbiddenException('Access Denied');
     }
 
+    if (!admin.is_active) {
+      throw new HttpException(
+        'You are not an active admin',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const passwordMatches = await bcrypt.compare(
       password,
       admin.hashed_password,
@@ -71,6 +78,8 @@ export class AuthService {
     return {
       access_token,
       expiresIn: process.env.ACCESS_TOKEN_TIME,
+      is_creator: admin.is_creator,
+      user_name: admin.user_name,
     };
   }
 

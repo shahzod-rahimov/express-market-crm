@@ -1,20 +1,58 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { ActivateAdminDto } from './dto/activate-admin.dto';
+import { DisactiveteAdminDto } from './dto/disactivete-admin.dto';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { Admin } from './entities/admin.entity';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class AdminService {
   constructor(@InjectModel(Admin) private adminModel: typeof Admin) {}
 
-  create(createAdminDto: CreateAdminDto) {
-    return this.adminModel.create({ ...createAdminDto });
+  async create(createAdminDto: CreateAdminDto) {
+    const { user_name } = createAdminDto;
+
+    const isExists = await this.findByUserName(user_name);
+
+    if (isExists) {
+      throw new HttpException('Username is exists', HttpStatus.BAD_REQUEST);
+    }
+
+    const hashed_password = await bcrypt.hash(
+      createAdminDto.hashed_password,
+      7,
+    );
+    const admin = await this.adminModel.create({
+      ...createAdminDto,
+      hashed_password,
+    });
+
+    return admin;
   }
 
-  findAll() {
-    return this.adminModel.findAll({});
+  async findAll(pageNumber: number) {
+    const PAGE_SIZE = 10;
+    const offset = (pageNumber - 1) * PAGE_SIZE;
+
+    const records = await this.adminModel.findAll({
+      limit: PAGE_SIZE,
+      offset,
+      attributes: ['id', 'full_name', 'user_name', 'is_active', 'is_creator'],
+    });
+
+    const totalCount = await this.adminModel.count();
+
+    const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+
+    return {
+      records: records,
+      pagination: {
+        currentPage: pageNumber,
+        totalPages: totalPages,
+        totalCount: totalCount,
+      },
+    };
   }
 
   async findOne(id: number) {
@@ -35,16 +73,16 @@ export class AdminService {
     return adminUsername;
   }
 
-  async activateAdmin(activateAdminDto: ActivateAdminDto) {
+  async disactiveteAdmin(disactiveteAdminDto: DisactiveteAdminDto) {
     const admin = await this.adminModel.findOne({
-      where: { id: activateAdminDto.id },
+      where: { id: disactiveteAdminDto.id },
     });
 
     if (!admin) {
       throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
     }
 
-    admin.is_active = true;
+    admin.is_active = false;
     await admin.save();
     return admin;
   }
