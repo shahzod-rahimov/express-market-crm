@@ -27,26 +27,12 @@ export class AdminService {
     return admin;
   }
 
-  async findByEmail(email: string) {
-    const adminEmail = await this.adminModel.findOne({ where: { email } });
-
-    return adminEmail;
-  }
-
   async findByUserName(user_name: string) {
     const adminUsername = await this.adminModel.findOne({
       where: { user_name },
     });
 
     return adminUsername;
-  }
-
-  async findByPhonenumber(phone_number: string) {
-    const adminPhonenumber = await this.adminModel.findOne({
-      where: { phone_number },
-    });
-
-    return adminPhonenumber;
   }
 
   async activateAdmin(activateAdminDto: ActivateAdminDto) {

@@ -2,12 +2,27 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { Admin } from './admin/entities/admin.entity';
+import * as bcrypt from 'bcryptjs';
 
 async function bootstrap() {
   const PORT = process.env.PORT;
   const app = await NestFactory.create(AppModule);
 
-  app.useGlobalPipes(new ValidationPipe())
+  const hasAdmin = await Admin.findAll({});
+
+  if (!hasAdmin.length) {
+    const password = await bcrypt.hash('1234567', 7);
+    Admin.create({
+      full_name: 'Kotta bolla',
+      user_name: 'admin',
+      hashed_password: password,
+      is_creator: true,
+      is_active: true,
+    });
+  }
+
+  app.useGlobalPipes(new ValidationPipe());
   app.enableCors();
 
   const config = new DocumentBuilder()

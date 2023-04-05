@@ -54,4 +54,17 @@ export class OrderService {
 
     throw new HttpException('Deleted', HttpStatus.OK);
   }
+
+  // async findByName(name: string) {
+  //   console.log(name);
+  //   // const orders = await this.orderModel.findAll({
+  //   //   where: { full_name: name },
+  //   // });
+
+  //   // if (!orders) {
+  //   //   throw new HttpException('Not found', HttpStatus.BAD_REQUEST);
+  //   // }
+
+  //   // return orders;
+  // }
 }

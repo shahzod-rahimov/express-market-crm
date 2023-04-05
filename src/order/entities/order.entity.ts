@@ -39,6 +39,10 @@ export class Order extends Model {
   @Column({ type: DataType.STRING })
   product_link: string;
 
+  @ApiProperty({ example: '1000000', description: 'Product advance payment' })
+  @Column({ type: DataType.DECIMAL })
+  advance_payment: number;
+
   @ApiProperty({ example: '1000000', description: 'Product price' })
   @Column({ type: DataType.DECIMAL })
   summa: number;
@@ -48,15 +52,14 @@ export class Order extends Model {
   @Column({ type: DataType.INTEGER })
   currency_type_id: number;
 
-  
   @ApiProperty({ example: 'ISUZU', description: 'Truck' })
   @Column({ type: DataType.STRING })
   truck: string;
-  
+
   @ApiProperty({ example: 'qwergffdfgghghrtnjjxc', description: 'Description' })
   @Column({ type: DataType.TEXT })
   description: string;
-  
+
   @BelongsTo(() => CurrencyType)
   currency_type: CurrencyType;
 }

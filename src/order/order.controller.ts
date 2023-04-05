@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -44,6 +45,14 @@ export class OrderController {
   findOne(@Param('id') id: string) {
     return this.orderService.findOne(+id);
   }
+
+  // @ApiOperation({ summary: 'Get orders by name' })
+  // @ApiResponse({ status: 200, type: [Order] })
+  // @UseGuards(IsActiveGuard)
+  // @Get('/byname?')
+  // findByName(@Query('name') byname: string) {
+  //   return this.orderService.findByName(byname);
+  // }
 
   @ApiOperation({ summary: 'Update order' })
   @ApiResponse({ status: 200, description: 'Updated' })

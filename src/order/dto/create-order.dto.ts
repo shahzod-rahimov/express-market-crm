@@ -23,14 +23,17 @@ export class CreateOrderDto {
 
   @ApiProperty({ example: '3', description: 'Currency ID' })
   @IsNumber()
+  @IsOptional()
   readonly currency_type_id: number;
 
   @ApiProperty({ example: 'ISUZU', description: 'Truck' })
   @IsString()
+  @IsOptional()
   readonly truck: string;
 
   @IsOptional()
   @ApiProperty({ example: 'qwergffdfgghghrtnjjxc', description: 'Description' })
   @IsString()
+  @IsOptional()
   readonly description: string;
 }

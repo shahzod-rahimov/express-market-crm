@@ -1,6 +1,6 @@
 // import { ApiProperty } from '@nestjs/swagger';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsPhoneNumber, IsString, Matches } from 'class-validator';
+import { IsEmail, IsOptional, IsPhoneNumber, IsString, Matches } from 'class-validator';
 
 export class CreateAdminDto {
   @ApiProperty({ example: 'John Doe', description: 'Admin fullname' })
@@ -17,15 +17,18 @@ export class CreateAdminDto {
     description: 'Admin telegram link',
   })
   @IsString()
+  @IsOptional()
   readonly tg_link: string;
 
   @ApiProperty({ example: '991234567', description: 'Admin phone number' })
   @IsPhoneNumber('UZ')
+  @IsOptional()
   readonly phone_number: string;
 
   @ApiProperty({ example: 'john@gmail.com', description: 'Admin email' })
   @IsString()
   @IsEmail()
+  @IsOptional()
   readonly email: string;
 
   @ApiProperty({ example: '991234567', description: 'Admin password' })
