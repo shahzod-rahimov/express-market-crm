@@ -73,7 +73,7 @@ export class AdminController {
   @ApiResponse({ status: 200, type: Admin })
   @UseGuards(CreatorGuard)
   @UseGuards(IsActiveGuard)
-  @Post('/disactivete')
+  @Post('/activete')
   disactivete(@Body() activeteAdminDto: ActiveteAdminDto) {
     return this.adminService.activeteAdmin(activeteAdminDto);
   }
