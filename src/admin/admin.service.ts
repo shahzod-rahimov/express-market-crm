@@ -5,10 +5,15 @@ import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { Admin } from './entities/admin.entity';
 import * as bcrypt from 'bcryptjs';
+import { JwtService } from '@nestjs/jwt';
+import { CheckTokenDto } from './dto/check-token.dto';
 
 @Injectable()
 export class AdminService {
-  constructor(@InjectModel(Admin) private adminModel: typeof Admin) {}
+  constructor(
+    @InjectModel(Admin) private adminModel: typeof Admin,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async create(createAdminDto: CreateAdminDto) {
     const { user_name } = createAdminDto;
@@ -38,7 +43,7 @@ export class AdminService {
     const records = await this.adminModel.findAll({
       limit: PAGE_SIZE,
       offset,
-      attributes: ['id', 'full_name', 'user_name', 'is_active', 'is_creator'],
+      attributes: { exclude: ['hashed_password', 'hashed_token'] },
     });
 
     const totalCount = await this.adminModel.count();
@@ -56,7 +61,10 @@ export class AdminService {
   }
 
   async findOne(id: number) {
-    const admin = await this.adminModel.findOne({ where: { id } });
+    const admin = await this.adminModel.findOne({
+      where: { id },
+      attributes: { exclude: ['hashed_password', 'hashed_token'] },
+    });
 
     if (!admin) {
       throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
@@ -118,5 +126,36 @@ export class AdminService {
     }
 
     throw new HttpException('Deleted', HttpStatus.OK);
+  }
+
+  async checkToken(checkTokenDto: CheckTokenDto) {
+    try {
+      const { token } = checkTokenDto;
+
+      if (token) {
+        const adminData = this.jwtService.verify(token, {
+          secret: process.env.ACCESS_TOKEN_KEY,
+        });
+
+        if (adminData) {
+          if (adminData.sub && adminData.is_active) {
+            const admin = await this.adminModel.findOne({
+              where: { id: adminData.sub },
+              attributes: { exclude: ['hashed_password', 'hashed_token'] },
+            });
+            if (admin) {
+              return { isValid: true, data: admin };
+            }
+          }
+        }
+      }
+      throw new HttpException({ isValid: false }, HttpStatus.BAD_REQUEST);
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(
+        { isValid: false, error: error.message },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 }

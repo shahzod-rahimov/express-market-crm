@@ -52,7 +52,7 @@ export class AuthService {
   async getTokens(admin: Admin, res: Response): Promise<Tokens> {
     const jwtPayload: JwtPayload = {
       sub: admin.id,
-      email: admin.email,
+      username: admin.user_name,
       is_creator: admin.is_creator,
       is_active: admin.is_active,
     };

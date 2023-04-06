@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Query,
+  HttpCode,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreatorGuard, IsActiveGuard } from '../common/guards';
@@ -16,6 +17,7 @@ import { DisactiveteAdminDto } from './dto/disactivete-admin.dto';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { Admin } from './entities/admin.entity';
+import { CheckTokenDto } from './dto/check-token.dto';
 
 @ApiTags('Admin')
 @Controller('admin')
@@ -72,5 +74,14 @@ export class AdminController {
   @Post('/disactivete')
   disactivete(@Body() disactiveteAdminDto: DisactiveteAdminDto) {
     return this.adminService.disactiveteAdmin(disactiveteAdminDto);
+  }
+
+  @ApiOperation({ summary: 'Check token' })
+  @ApiResponse({ status: 200, type: Admin })
+  @HttpCode(200)
+  @UseGuards(IsActiveGuard)
+  @Post('check-token')
+  checkToken(@Body() checkTokenDto: CheckTokenDto) {
+    return this.adminService.checkToken(checkTokenDto);
   }
 }

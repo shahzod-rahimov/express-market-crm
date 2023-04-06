@@ -11,7 +11,7 @@ export class OperationService {
   constructor(
     @InjectModel(Operation) private operationModel: typeof Operation,
   ) {}
-  
+
   create(createOperationDto: CreateOperationDto) {
     return this.operationModel.create({ ...createOperationDto });
   }
@@ -20,8 +20,11 @@ export class OperationService {
     return this.operationModel.findAll({
       attributes: { exclude: ['order_id', 'admin_id'] },
       include: [
-        { model: Order, attributes: ['order_unique_id'] },
-        { model: Admin, attributes: ['full_name', 'user_name'] },
+        { model: Order },
+        {
+          model: Admin,
+          attributes: { exclude: ['hashed_password', 'hashed_token'] },
+        },
       ],
     });
   }
@@ -29,7 +32,14 @@ export class OperationService {
   async findOne(id: number) {
     const operation = await this.operationModel.findOne({
       where: { id },
-      include: { all: true },
+      attributes: { exclude: ['order_id', 'admin_id'] },
+      include: [
+        { model: Order },
+        {
+          model: Admin,
+          attributes: { exclude: ['hashed_password', 'hashed_token'] },
+        },
+      ],
     });
     if (!operation) {
       throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
