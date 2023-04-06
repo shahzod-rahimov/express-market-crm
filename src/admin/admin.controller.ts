@@ -13,7 +13,7 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreatorGuard, IsActiveGuard } from '../common/guards';
 import { AdminService } from './admin.service';
-import { DisactiveteAdminDto } from './dto/disactivete-admin.dto';
+import { ActiveteAdminDto } from './dto/disactivete-admin.dto';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { Admin } from './entities/admin.entity';
@@ -35,6 +35,7 @@ export class AdminController {
 
   @ApiOperation({ summary: 'Get Admin by id' })
   @ApiResponse({ status: 200, type: Admin })
+  @UseGuards(CreatorGuard)
   @UseGuards(IsActiveGuard)
   @Get('search/all?')
   findAll(@Query('page') pageNumber: string) {
@@ -43,6 +44,7 @@ export class AdminController {
 
   @ApiOperation({ summary: 'Get all Admins' })
   @ApiResponse({ status: 200, type: [Admin] })
+  @UseGuards(CreatorGuard)
   @UseGuards(IsActiveGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
@@ -72,8 +74,8 @@ export class AdminController {
   @UseGuards(CreatorGuard)
   @UseGuards(IsActiveGuard)
   @Post('/disactivete')
-  disactivete(@Body() disactiveteAdminDto: DisactiveteAdminDto) {
-    return this.adminService.disactiveteAdmin(disactiveteAdminDto);
+  disactivete(@Body() activeteAdminDto: ActiveteAdminDto) {
+    return this.adminService.activeteAdmin(activeteAdminDto);
   }
 
   @ApiOperation({ summary: 'Check token' })

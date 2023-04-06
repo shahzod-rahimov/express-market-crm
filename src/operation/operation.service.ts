@@ -16,18 +16,8 @@ export class OperationService {
     const operation = await this.operationModel.create({
       ...createOperationDto,
     });
-    const result = await this.operationModel.findOne({
-      where: { id: operation.id },
-      attributes: { exclude: ['admin_id', 'order_id'] },
-      include: [
-        { model: Order },
-        {
-          model: Admin,
-          attributes: { exclude: ['hashed_password', 'hashed_token'] },
-        },
-      ],
-    });
-    return result;
+
+    return this.findOne(operation.id);
   }
 
   async findAll() {

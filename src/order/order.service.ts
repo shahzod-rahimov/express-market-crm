@@ -5,6 +5,7 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { Order } from './entities/order.entity';
 import { Op } from 'sequelize';
 import { FromToOrderSearchDto } from './dto/from-to-order-date-search.dto';
+import { Operation } from '../operation/entities/operation.entity';
 
 @Injectable()
 export class OrderService {
@@ -26,6 +27,10 @@ export class OrderService {
     const records = await this.orderModel.findAll({
       limit: PAGE_SIZE,
       offset,
+      include: {
+        model: Operation,
+        attributes: { exclude: ['admin_id', 'order_id'] },
+      },
     });
 
     const totalCount = await this.orderModel.count();
@@ -45,7 +50,10 @@ export class OrderService {
   async findOne(id: number) {
     const order = await this.orderModel.findOne({
       where: { id },
-      include: { all: true },
+      include: {
+        model: Operation,
+        attributes: { exclude: ['admin_id', 'order_id'] },
+      },
     });
     if (!order) {
       throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
@@ -85,6 +93,10 @@ export class OrderService {
       where: { full_name: { [Op.iLike]: `%${name}%` } },
       limit: PAGE_SIZE,
       offset,
+      include: {
+        model: Operation,
+        attributes: { exclude: ['admin_id', 'order_id'] },
+      },
     });
 
     if (!records.length) {
@@ -110,6 +122,10 @@ export class OrderService {
   async findByOrderUniqueId(id: string) {
     const order = await this.orderModel.findOne({
       where: { order_unique_id: id },
+      include: {
+        model: Operation,
+        attributes: { exclude: ['admin_id', 'order_id'] },
+      },
     });
 
     if (!order) {
@@ -132,6 +148,10 @@ export class OrderService {
       where: { createdAt: { [Op.between]: [from, to] } },
       limit: PAGE_SIZE,
       offset,
+      include: {
+        model: Operation,
+        attributes: { exclude: ['admin_id', 'order_id'] },
+      },
     });
 
     if (!order) {

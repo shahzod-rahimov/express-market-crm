@@ -20,6 +20,7 @@ import { APP_GUARD } from '@nestjs/core';
       database: process.env.POSTGRES_DB,
       autoLoadModels: true,
       logging: false,
+      synchronize: true
     }),
     AdminModule,
     OrderModule,

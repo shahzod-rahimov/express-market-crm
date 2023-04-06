@@ -1,8 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber } from 'class-validator';
+import { IsBoolean, IsNumber } from 'class-validator';
 
-export class DisactiveteAdminDto {
+export class ActiveteAdminDto {
   @ApiProperty({ example: '1', description: 'Unikal ID' })
   @IsNumber()
   readonly id: number;
+
+  @ApiProperty({ example: 'true/false', description: 'Activate or not' })
+  @IsBoolean()
+  readonly value: boolean;
 }

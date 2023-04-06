@@ -8,20 +8,17 @@ import {
   Delete,
   UseGuards,
   Query,
-  Req,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { CreatorGuard, IsActiveGuard } from '../common/guards';
 import {
-  ApiBearerAuth,
   ApiOperation,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { Order } from './entities/order.entity';
-import { Request } from 'express';
 import { FromToOrderSearchDto } from './dto/from-to-order-date-search.dto';
 
 @ApiTags('Order')
@@ -31,7 +28,6 @@ export class OrderController {
 
   @ApiOperation({ summary: 'Create Order' })
   @ApiResponse({ status: 200, type: Order })
-  @UseGuards(CreatorGuard)
   @UseGuards(IsActiveGuard)
   @Post()
   create(@Body() createOrderDto: CreateOrderDto) {

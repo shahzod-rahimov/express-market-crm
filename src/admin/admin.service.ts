@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { DisactiveteAdminDto } from './dto/disactivete-admin.dto';
+import { ActiveteAdminDto } from './dto/disactivete-admin.dto';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { Admin } from './entities/admin.entity';
@@ -81,16 +81,16 @@ export class AdminService {
     return adminUsername;
   }
 
-  async disactiveteAdmin(disactiveteAdminDto: DisactiveteAdminDto) {
+  async activeteAdmin(activeteAdminDto: ActiveteAdminDto) {
     const admin = await this.adminModel.findOne({
-      where: { id: disactiveteAdminDto.id },
+      where: { id: activeteAdminDto.id },
     });
 
     if (!admin) {
       throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
     }
 
-    admin.is_active = false;
+    admin.is_active = activeteAdminDto.value;
     await admin.save();
     return admin;
   }

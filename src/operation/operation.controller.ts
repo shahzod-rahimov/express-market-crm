@@ -22,7 +22,6 @@ export class OperationController {
 
   @ApiOperation({ summary: 'Create Operation' })
   @ApiResponse({ status: 200, type: Operation })
-  @UseGuards(CreatorGuard)
   @UseGuards(IsActiveGuard)
   @Post()
   create(@Body() createOperationDto: CreateOperationDto) {
