@@ -77,7 +77,7 @@ export class AuthService {
 
     return {
       access_token,
-      expiresIn: process.env.ACCESS_TOKEN_TIME,
+      id: admin.id,
       is_creator: admin.is_creator,
       user_name: admin.user_name,
     };

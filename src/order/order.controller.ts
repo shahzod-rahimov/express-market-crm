@@ -14,7 +14,12 @@ import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { CreatorGuard, IsActiveGuard } from '../common/guards';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Order } from './entities/order.entity';
 import { Request } from 'express';
 import { FromToOrderSearchDto } from './dto/from-to-order-date-search.dto';
@@ -68,9 +73,12 @@ export class OrderController {
   @ApiOperation({ summary: 'Get order by date' })
   @ApiResponse({ status: 200, type: [Order] })
   @UseGuards(IsActiveGuard)
-  @Get('/search/bydate')
-  findByDate(@Body() fromToOrderSearchDto: FromToOrderSearchDto) {
-    return this.orderService.findByDate(fromToOrderSearchDto);
+  @Get('/search/bydate?')
+  findByDate(
+    @Body() fromToOrderSearchDto: FromToOrderSearchDto,
+    @Query('page') pageNumber: string,
+  ) {
+    return this.orderService.findByDate(fromToOrderSearchDto, +pageNumber);
   }
 
   @ApiOperation({ summary: 'Update order' })

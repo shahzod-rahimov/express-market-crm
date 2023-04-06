@@ -119,17 +119,38 @@ export class OrderService {
     return order;
   }
 
-  async findByDate(fromToOrderSearchDto: FromToOrderSearchDto) {
+  async findByDate(
+    fromToOrderSearchDto: FromToOrderSearchDto,
+    pageNumber: number,
+  ) {
     const { from, to } = fromToOrderSearchDto;
 
-    //! Frontdan qanaqa Date kelishini so'reyman Muhammadidan
+    const PAGE_SIZE = 10;
+    const offset = (pageNumber - 1) * PAGE_SIZE;
 
-    const order = await this.orderModel.findOne({
+    const order = await this.orderModel.findAll({
       where: { createdAt: { [Op.between]: [from, to] } },
+      limit: PAGE_SIZE,
+      offset,
     });
+
     if (!order) {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
-    return order;
+
+    const totalCount = await this.orderModel.count({
+      where: { createdAt: { [Op.between]: [from, to] } },
+    });
+
+    const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+
+    return {
+      records: order,
+      pagination: {
+        currentPage: pageNumber,
+        totalPages: totalPages,
+        totalCount: totalCount,
+      },
+    };
   }
 }

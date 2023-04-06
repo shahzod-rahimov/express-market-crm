@@ -12,8 +12,22 @@ export class OperationService {
     @InjectModel(Operation) private operationModel: typeof Operation,
   ) {}
 
-  create(createOperationDto: CreateOperationDto) {
-    return this.operationModel.create({ ...createOperationDto });
+  async create(createOperationDto: CreateOperationDto) {
+    const operation = await this.operationModel.create({
+      ...createOperationDto,
+    });
+    const result = await this.operationModel.findOne({
+      where: { id: operation.id },
+      attributes: { exclude: ['admin_id', 'order_id'] },
+      include: [
+        { model: Order },
+        {
+          model: Admin,
+          attributes: { exclude: ['hashed_password', 'hashed_token'] },
+        },
+      ],
+    });
+    return result;
   }
 
   async findAll() {
