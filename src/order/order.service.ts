@@ -11,10 +11,23 @@ import { Operation } from '../operation/entities/operation.entity';
 export class OrderService {
   constructor(@InjectModel(Order) private orderModel: typeof Order) {}
 
+  getUniqueID(id: number) {
+    const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+    const length = letters.length;
+
+    return `${letters[this.getRandomNumber(length)]}${
+      letters[this.getRandomNumber(length)]
+    }${1000 + id}`;
+  }
+
+  getRandomNumber(num: number) {
+    return Math.floor(Math.random() * num);
+  }
+
   async create(createOrderDto: CreateOrderDto) {
     const order = await this.orderModel.create({ ...createOrderDto });
 
-    order.order_unique_id = (1000 + order.id).toString();
+    order.order_unique_id = this.getUniqueID(order.id);
 
     await order.save();
     return order;
@@ -26,7 +39,8 @@ export class OrderService {
 
     const records = await this.orderModel.findAll({
       limit: PAGE_SIZE,
-      offset,
+      offset: offset,
+      order: [['id', 'ASC']],
       include: {
         model: Operation,
         attributes: { exclude: ['admin_id', 'order_id'] },
@@ -120,8 +134,8 @@ export class OrderService {
   }
 
   async findByOrderUniqueId(id: string) {
-    const order = await this.orderModel.findOne({
-      where: { order_unique_id: id },
+    const order = await this.orderModel.findAll({
+      where: { order_unique_id: { [Op.startsWith]: `${id}` } },
       include: {
         model: Operation,
         attributes: { exclude: ['admin_id', 'order_id'] },

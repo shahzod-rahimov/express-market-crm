@@ -71,8 +71,8 @@ export class OrderController {
   @UseGuards(IsActiveGuard)
   @Get('/search/bydate?')
   findByDate(
-    @Body() fromToOrderSearchDto: FromToOrderSearchDto,
     @Query('page') pageNumber: string,
+    @Body() fromToOrderSearchDto: FromToOrderSearchDto,
   ) {
     return this.orderService.findByDate(fromToOrderSearchDto, +pageNumber);
   }
