@@ -5,6 +5,7 @@ import { UpdateOperationDto } from './dto/update-operation.dto';
 import { Operation } from './entities/operation.entity';
 import { Admin } from '../admin/entities/admin.entity';
 import { Order } from '../order/entities/order.entity';
+import { resourceUsage } from 'process';
 
 @Injectable()
 export class OperationService {
@@ -13,11 +14,20 @@ export class OperationService {
   ) {}
 
   async create(createOperationDto: CreateOperationDto) {
-    const operation = await this.operationModel.create({
-      ...createOperationDto,
+    const isStatusExist = await this.operationModel.findOne({
+      where: {
+        status: createOperationDto.status,
+        order_id: createOperationDto.order_id,
+      },
     });
 
-    return this.findOne(operation.id);
+    if (isStatusExist) {
+      throw new HttpException('Status already exists', HttpStatus.BAD_REQUEST);
+    }
+
+    return this.operationModel.create({
+      ...createOperationDto,
+    });
   }
 
   async findAll() {
@@ -100,7 +110,7 @@ export class OperationService {
 
   async remove(id: number) {
     const deletedOperation = await this.operationModel.destroy({
-      where: { id },
+      where: { order_id: id },
     });
 
     if (!deletedOperation) {
