@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, DataType, HasOne, Model, Table } from 'sequelize-typescript';
+import {
+  Column,
+  DataType,
+  HasMany,
+  HasOne,
+  Model,
+  Table,
+} from 'sequelize-typescript';
 import { Operation } from '../../operation/entities/operation.entity';
 
 @Table({ tableName: 'orders' })
@@ -44,6 +51,6 @@ export class Order extends Model {
   @Column({ type: DataType.TEXT })
   description: string;
 
-  @HasOne(() => Operation)
-  operation: Operation;
+  @HasMany(() => Operation)
+  operation: Operation[];
 }

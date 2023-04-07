@@ -10,7 +10,7 @@ import {
 import { Order } from '../../order/entities/order.entity';
 import { Admin } from '../../admin/entities/admin.entity';
 
-@Table({ tableName: 'operations', timestamps: false })
+@Table({ tableName: 'operations' })
 export class Operation extends Model {
   @ApiProperty({ example: '1', description: 'Unikal ID' })
   @Column({
@@ -35,9 +35,6 @@ export class Operation extends Model {
   })
   @Column({ type: DataType.STRING, defaultValue: '0' })
   status: string;
-
-  @Column({ type: DataType.DATE, defaultValue: new Date() })
-  operation_date: Date;
 
   @ApiProperty({ example: '4', description: 'Admin ID' })
   @ForeignKey(() => Admin)

@@ -51,6 +51,38 @@ export class OperationService {
     return operation;
   }
 
+  async findStatus(status: string, pageNumber: number) {
+    const PAGE_SIZE = 10;
+    const offset = (pageNumber - 1) * PAGE_SIZE;
+
+    const records = await this.operationModel.findAll({
+      where: { status },
+      limit: PAGE_SIZE,
+      offset: offset,
+      order: [['id', 'ASC']],
+      include: [
+        { model: Order },
+        {
+          model: Admin,
+          attributes: { exclude: ['hashed_password', 'hashed_token'] },
+        },
+      ],
+    });
+
+    const totalCount = await this.operationModel.count();
+
+    const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+
+    return {
+      records: records,
+      pagination: {
+        currentPage: pageNumber,
+        totalPages: totalPages,
+        totalCount: totalCount,
+      },
+    };
+  }
+
   async update(id: number, updateOperationDto: UpdateOperationDto) {
     const updatedOperation = await this.operationModel.update(
       updateOperationDto,

@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { OperationService } from './operation.service';
 import { CreateOperationDto } from './dto/create-operation.dto';
@@ -34,6 +35,14 @@ export class OperationController {
   @Get()
   findAll() {
     return this.operationService.findAll();
+  }
+
+  @ApiOperation({ summary: 'Get status' })
+  @ApiResponse({ status: 200, type: [Operation] })
+  @UseGuards(IsActiveGuard)
+  @Get('/search/status?')
+  findStatus(@Query('page') page: string, @Query('status') status: string) {
+    return this.operationService.findStatus(status, +page);
   }
 
   @ApiOperation({ summary: 'Get operation' })

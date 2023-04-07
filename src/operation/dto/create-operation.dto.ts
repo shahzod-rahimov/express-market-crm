@@ -11,6 +11,14 @@ export class CreateOperationDto {
   readonly admin_id: number;
 
   @ApiProperty({
+    example: '1',
+    description: 'Operation status',
+  })
+  @IsOptional()
+  @IsString()
+  readonly status: string;
+
+  @ApiProperty({
     example: 'asdfjgksdjgkjjerdgsngkjdsnfkg',
     description: 'Operation description',
   })
