@@ -86,6 +86,10 @@ export class AdminService {
       where: { id: activeteAdminDto.id },
     });
 
+    if (admin.is_creator === true) {
+      throw new HttpException('Admin is creator', HttpStatus.BAD_REQUEST);
+    }
+
     if (!admin) {
       throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
     }

@@ -13,11 +13,7 @@ import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { CreatorGuard, IsActiveGuard } from '../common/guards';
-import {
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Order } from './entities/order.entity';
 import { FromToOrderSearchDto } from './dto/from-to-order-date-search.dto';
 
@@ -93,5 +89,16 @@ export class OrderController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.orderService.remove(+id);
+  }
+
+  @ApiOperation({ summary: 'Find by order status' })
+  @ApiResponse({ status: 200, description: 'Find by order status' })
+  @UseGuards(IsActiveGuard)
+  @Get('search/bystatus?')
+  findOrderOperation(
+    @Query('status') status: string,
+    @Query('page') pageNumber: string,
+  ) {
+    return this.orderService.findOrderOperation(status, +pageNumber);
   }
 }

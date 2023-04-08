@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Order } from './entities/order.entity';
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import { FromToOrderSearchDto } from './dto/from-to-order-date-search.dto';
 import { Operation } from '../operation/entities/operation.entity';
 
@@ -186,5 +186,25 @@ export class OrderService {
         totalCount: totalCount,
       },
     };
+  }
+
+  async findOrderOperation(status: string, pageNumber: number) {
+    const pageSize = 10;
+    const orders = await this.orderModel
+      .findAll({
+        limit: pageSize,
+        offset: (pageNumber - 1) * pageSize,
+        include: { model: Operation, limit: 1, order: [['createdAt', 'DESC']] },
+      })
+      .then((orders) => {
+        const filtered = orders.filter((order) => {
+          const operation = order.operation;
+          return operation[operation.length - 1].status == status;
+        });
+
+        return filtered;
+      });
+
+    return orders;
   }
 }
