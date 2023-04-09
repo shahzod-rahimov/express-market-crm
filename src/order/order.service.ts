@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Order } from './entities/order.entity';
-import { Op, Sequelize } from 'sequelize';
+import { Op } from 'sequelize';
 import { FromToOrderSearchDto } from './dto/from-to-order-date-search.dto';
 import { Operation } from '../operation/entities/operation.entity';
 
@@ -159,7 +159,11 @@ export class OrderService {
     const offset = (pageNumber - 1) * PAGE_SIZE;
 
     const order = await this.orderModel.findAll({
-      where: { createdAt: { [Op.between]: [from, to] } },
+      where: {
+        createdAt: {
+          [Op.between]: [from, to],
+        },
+      },
       limit: PAGE_SIZE,
       offset,
       include: {
@@ -168,7 +172,7 @@ export class OrderService {
       },
     });
 
-    if (!order) {
+    if (!order.length) {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
 
