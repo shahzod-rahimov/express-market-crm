@@ -29,7 +29,7 @@ export class OperationService {
     const newOperation = await this.operationModel.create({
       ...createOperationDto,
     });
-    console.log("change")
+    console.log("change");
     return newOperation;
   }
 

@@ -7,9 +7,17 @@ import { OperationModule } from './operation/operation.module';
 import { AuthModule } from './auth/auth.module';
 import { AccessTokenGuard } from './common/guards';
 import { APP_GUARD } from '@nestjs/core';
-
+import { TelegrafModule } from 'nestjs-telegraf';
 @Module({
   imports: [
+    TelegrafModule.forRootAsync({
+      botName:'akmal_express-bot',
+      useFactory:() => ({
+        token:process.env.BOT_TOKEN,
+        middlewares:[],
+        include:[]
+      })
+    }),
     ConfigModule.forRoot({ envFilePath: `.env` }),
     SequelizeModule.forRoot({
       dialect: 'postgres',
