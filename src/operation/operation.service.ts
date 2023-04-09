@@ -26,9 +26,11 @@ export class OperationService {
       throw new HttpException('Status already exists', HttpStatus.BAD_REQUEST);
     }
 
-    return this.operationModel.create({
+    const newOperation = await this.operationModel.create({
       ...createOperationDto,
     });
+    console.log("change")
+    return newOperation;
   }
 
   async findAll() {
