@@ -6,6 +6,7 @@ import { Order } from './entities/order.entity';
 import { Op } from 'sequelize';
 import { FromToOrderSearchDto } from './dto/from-to-order-date-search.dto';
 import { Operation } from '../operation/entities/operation.entity';
+import { Admin } from '../admin/entities/admin.entity';
 
 @Injectable()
 export class OrderService {
@@ -43,7 +44,13 @@ export class OrderService {
       order: [['id', 'ASC']],
       include: {
         model: Operation,
-        attributes: { exclude: ['admin_id', 'order_id'] },
+        attributes: { exclude: ['order_id'] },
+        include: [
+          {
+            model: Admin,
+            attributes: { exclude: ['hashed_password', 'hashed_token'] },
+          },
+        ],
       },
     });
 
@@ -66,7 +73,13 @@ export class OrderService {
       where: { id },
       include: {
         model: Operation,
-        attributes: { exclude: ['admin_id', 'order_id'] },
+        attributes: { exclude: ['order_id'] },
+        include: [
+          {
+            model: Admin,
+            attributes: { exclude: ['hashed_password', 'hashed_token'] },
+          },
+        ],
       },
     });
     if (!order) {
@@ -109,7 +122,13 @@ export class OrderService {
       offset,
       include: {
         model: Operation,
-        attributes: { exclude: ['admin_id', 'order_id'] },
+        attributes: { exclude: ['order_id'] },
+        include: [
+          {
+            model: Admin,
+            attributes: { exclude: ['hashed_password', 'hashed_token'] },
+          },
+        ],
       },
     });
 
@@ -139,6 +158,12 @@ export class OrderService {
       include: {
         model: Operation,
         attributes: { exclude: ['admin_id', 'order_id'] },
+        include: [
+          {
+            model: Admin,
+            attributes: { exclude: ['hashed_password', 'hashed_token'] },
+          },
+        ],
       },
     });
 
@@ -169,6 +194,12 @@ export class OrderService {
       include: {
         model: Operation,
         attributes: { exclude: ['admin_id', 'order_id'] },
+        include: [
+          {
+            model: Admin,
+            attributes: { exclude: ['hashed_password', 'hashed_token'] },
+          },
+        ],
       },
     });
 
@@ -198,7 +229,18 @@ export class OrderService {
       .findAll({
         limit: pageSize,
         offset: (pageNumber - 1) * pageSize,
-        include: { model: Operation, limit: 1, order: [['createdAt', 'DESC']] },
+        include: {
+          model: Operation,
+          limit: 1,
+          order: [['createdAt', 'DESC']],
+          attributes: { exclude: ['order_id'] },
+          include: [
+            {
+              model: Admin,
+              attributes: { exclude: ['hashed_password', 'hashed_token'] },
+            },
+          ],
+        },
       })
       .then((orders) => {
         const filtered = orders.filter((order) => {
