@@ -231,7 +231,7 @@ export class OrderService {
         offset: (pageNumber - 1) * pageSize,
         include: {
           model: Operation,
-          limit: 1,
+          limit: 3,
           order: [['createdAt', 'DESC']],
           attributes: { exclude: ['order_id'] },
           include: [
@@ -245,7 +245,8 @@ export class OrderService {
       .then((orders) => {
         const filtered = orders.filter((order) => {
           const operation = order.operation;
-          return operation[0].status == status;
+          return operation;
+          // return operation[0].status == status;
         });
 
         return filtered;
