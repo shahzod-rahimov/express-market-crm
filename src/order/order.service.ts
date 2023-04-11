@@ -167,7 +167,7 @@ export class OrderService {
       },
     });
 
-    if (!order) {
+    if (!order.length) {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
 
