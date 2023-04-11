@@ -102,4 +102,12 @@ export class OrderController {
   ) {
     return this.orderService.findOrderOperation(status, +pageNumber);
   }
+
+  @ApiOperation({ summary: 'Create order' })
+  @ApiResponse({ status: 201, type: Order })
+  @UseGuards(IsActiveGuard)
+  @Get('statistika/:date')
+  statistika(@Param('date') date: Date) {
+    return this.orderService.statistikaOrder(date);
+  }
 }

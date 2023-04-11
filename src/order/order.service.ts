@@ -253,4 +253,40 @@ export class OrderService {
 
     return orders;
   }
+
+  dayMonth(date) {
+    var dateObj = new Date(date);
+    var month = dateObj.getMonth() + 1; //months from 1-12
+    var day = dateObj.getDate();
+    return month + '/' + day;
+  }
+  addDays(date, days = -1) {
+    var result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  }
+
+  async statistikaOrder(date) {
+    try {
+      console.log(new Date(this.addDays(date)));
+      let result = { days: [], order: [] };
+      for (let i = 0; i < 30; i++) {
+        const resl = await this.orderModel.findAll({
+          where: {
+            createdAt: {
+              [Op.between]: [new Date(this.addDays(date)), new Date(date)],
+            },
+          },
+        });
+        result.days.push(this.dayMonth(date));
+        result.order.push(resl.length);
+        date = this.addDays(date);
+      }
+      result.days.reverse();
+      result.order.reverse();
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }
