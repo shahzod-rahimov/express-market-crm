@@ -231,7 +231,7 @@ export class OrderService {
         offset: (pageNumber - 1) * pageSize,
         include: {
           model: Operation,
-          limit: 3,
+          limit: 1,
           order: [['createdAt', 'DESC']],
           attributes: { exclude: ['order_id'] },
           include: [
