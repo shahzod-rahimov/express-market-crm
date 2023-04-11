@@ -16,6 +16,7 @@ import { CreatorGuard, IsActiveGuard } from '../common/guards';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Order } from './entities/order.entity';
 import { FromToOrderSearchDto } from './dto/from-to-order-date-search.dto';
+import { Public } from '../common/decorators';
 
 @ApiTags('Order')
 @Controller('order')
@@ -54,6 +55,7 @@ export class OrderController {
     return this.orderService.findByName(name, +pageNumber);
   }
 
+  @Public()
   @ApiOperation({ summary: 'Get order by unique ID' })
   @ApiResponse({ status: 200, type: Order })
   @Get('/search/byuniqueid?')
