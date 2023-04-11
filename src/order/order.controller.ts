@@ -56,7 +56,6 @@ export class OrderController {
 
   @ApiOperation({ summary: 'Get order by unique ID' })
   @ApiResponse({ status: 200, type: Order })
-  @UseGuards(IsActiveGuard)
   @Get('/search/byuniqueid?')
   findByOrderUniqueId(@Query('id') id: string) {
     return this.orderService.findByOrderUniqueId(id);
