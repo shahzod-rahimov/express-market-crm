@@ -5,8 +5,6 @@ import { UpdateOperationDto } from './dto/update-operation.dto';
 import { Operation } from './entities/operation.entity';
 import { Admin } from '../admin/entities/admin.entity';
 import { Order } from '../order/entities/order.entity';
-import { resourceUsage } from 'process';
-import { where } from 'sequelize';
 
 @Injectable()
 export class OperationService {
@@ -26,11 +24,24 @@ export class OperationService {
       throw new HttpException('Status already exists', HttpStatus.BAD_REQUEST);
     }
 
-    const newOperation = await this.operationModel.create({
-      ...createOperationDto,
-    });
-    console.log("change");
-    return newOperation;
+    const createdOperation = await this.operationModel
+      .create({
+        ...createOperationDto,
+      })
+      .then((operation) =>
+        this.operationModel.findOne({
+          where: { id: operation.id },
+          include: [
+            { model: Order },
+            {
+              model: Admin,
+              attributes: { exclude: ['hashed_password', 'hashed_token'] },
+            },
+          ],
+        }),
+      );
+
+    return createdOperation;
   }
 
   async findAll() {

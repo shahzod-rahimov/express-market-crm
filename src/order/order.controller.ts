@@ -16,6 +16,7 @@ import { CreatorGuard, IsActiveGuard } from '../common/guards';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Order } from './entities/order.entity';
 import { FromToOrderSearchDto } from './dto/from-to-order-date-search.dto';
+import { Public } from '../common/decorators';
 
 @ApiTags('Order')
 @Controller('order')
@@ -54,9 +55,9 @@ export class OrderController {
     return this.orderService.findByName(name, +pageNumber);
   }
 
+  @Public()
   @ApiOperation({ summary: 'Get order by unique ID' })
   @ApiResponse({ status: 200, type: Order })
-  @UseGuards(IsActiveGuard)
   @Get('/search/byuniqueid?')
   findByOrderUniqueId(@Query('id') id: string) {
     return this.orderService.findByOrderUniqueId(id);
@@ -100,5 +101,13 @@ export class OrderController {
     @Query('page') pageNumber: string,
   ) {
     return this.orderService.findOrderOperation(status, +pageNumber);
+  }
+
+  @ApiOperation({ summary: 'Create order' })
+  @ApiResponse({ status: 201, type: Order })
+  @UseGuards(IsActiveGuard)
+  @Get('statistika/:date')
+  statistika(@Param('date') date: Date) {
+    return this.orderService.statistikaOrder(date);
   }
 }

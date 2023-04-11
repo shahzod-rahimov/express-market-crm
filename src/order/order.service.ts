@@ -3,9 +3,10 @@ import { InjectModel } from '@nestjs/sequelize';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Order } from './entities/order.entity';
-import { Op, Sequelize } from 'sequelize';
+import { Op } from 'sequelize';
 import { FromToOrderSearchDto } from './dto/from-to-order-date-search.dto';
 import { Operation } from '../operation/entities/operation.entity';
+import { Admin } from '../admin/entities/admin.entity';
 
 @Injectable()
 export class OrderService {
@@ -43,7 +44,13 @@ export class OrderService {
       order: [['id', 'ASC']],
       include: {
         model: Operation,
-        attributes: { exclude: ['admin_id', 'order_id'] },
+        attributes: { exclude: ['order_id'] },
+        include: [
+          {
+            model: Admin,
+            attributes: { exclude: ['hashed_password', 'hashed_token'] },
+          },
+        ],
       },
     });
 
@@ -66,7 +73,13 @@ export class OrderService {
       where: { id },
       include: {
         model: Operation,
-        attributes: { exclude: ['admin_id', 'order_id'] },
+        attributes: { exclude: ['order_id'] },
+        include: [
+          {
+            model: Admin,
+            attributes: { exclude: ['hashed_password', 'hashed_token'] },
+          },
+        ],
       },
     });
     if (!order) {
@@ -109,7 +122,13 @@ export class OrderService {
       offset,
       include: {
         model: Operation,
-        attributes: { exclude: ['admin_id', 'order_id'] },
+        attributes: { exclude: ['order_id'] },
+        include: [
+          {
+            model: Admin,
+            attributes: { exclude: ['hashed_password', 'hashed_token'] },
+          },
+        ],
       },
     });
 
@@ -139,10 +158,16 @@ export class OrderService {
       include: {
         model: Operation,
         attributes: { exclude: ['admin_id', 'order_id'] },
+        include: [
+          {
+            model: Admin,
+            attributes: { exclude: ['hashed_password', 'hashed_token'] },
+          },
+        ],
       },
     });
 
-    if (!order) {
+    if (!order.length) {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
 
@@ -159,16 +184,26 @@ export class OrderService {
     const offset = (pageNumber - 1) * PAGE_SIZE;
 
     const order = await this.orderModel.findAll({
-      where: { createdAt: { [Op.between]: [from, to] } },
+      where: {
+        createdAt: {
+          [Op.between]: [from, to],
+        },
+      },
       limit: PAGE_SIZE,
       offset,
       include: {
         model: Operation,
         attributes: { exclude: ['admin_id', 'order_id'] },
+        include: [
+          {
+            model: Admin,
+            attributes: { exclude: ['hashed_password', 'hashed_token'] },
+          },
+        ],
       },
     });
 
-    if (!order) {
+    if (!order.length) {
       throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
 
@@ -194,7 +229,18 @@ export class OrderService {
       .findAll({
         limit: pageSize,
         offset: (pageNumber - 1) * pageSize,
-        include: { model: Operation, limit: 1, order: [['createdAt', 'DESC']] },
+        include: {
+          model: Operation,
+          limit: 1,
+          order: [['createdAt', 'DESC']],
+          attributes: { exclude: ['order_id'] },
+          include: [
+            {
+              model: Admin,
+              attributes: { exclude: ['hashed_password', 'hashed_token'] },
+            },
+          ],
+        },
       })
       .then((orders) => {
         const filtered = orders.filter((order) => {
@@ -206,5 +252,41 @@ export class OrderService {
       });
 
     return orders;
+  }
+
+  dayMonth(date) {
+    var dateObj = new Date(date);
+    var month = dateObj.getMonth() + 1; //months from 1-12
+    var day = dateObj.getDate();
+    return month + '/' + day;
+  }
+  addDays(date, days = -1) {
+    var result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  }
+
+  async statistikaOrder(date) {
+    try {
+      console.log(new Date(this.addDays(date)));
+      let result = { days: [], order: [] };
+      for (let i = 0; i < 30; i++) {
+        const resl = await this.orderModel.findAll({
+          where: {
+            createdAt: {
+              [Op.between]: [new Date(this.addDays(date)), new Date(date)],
+            },
+          },
+        });
+        result.days.push(this.dayMonth(date));
+        result.order.push(resl.length);
+        date = this.addDays(date);
+      }
+      result.days.reverse();
+      result.order.reverse();
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

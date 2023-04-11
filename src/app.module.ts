@@ -11,12 +11,12 @@ import { TelegrafModule } from 'nestjs-telegraf';
 @Module({
   imports: [
     TelegrafModule.forRootAsync({
-      botName:'akmal_express-bot',
-      useFactory:() => ({
-        token:process.env.BOT_TOKEN,
-        middlewares:[],
-        include:[]
-      })
+      botName: 'akmal_express-bot',
+      useFactory: () => ({
+        token: process.env.BOT_TOKEN,
+        middlewares: [],
+        include: [],
+      }),
     }),
     ConfigModule.forRoot({ envFilePath: `.env` }),
     SequelizeModule.forRoot({
@@ -28,7 +28,7 @@ import { TelegrafModule } from 'nestjs-telegraf';
       database: process.env.POSTGRES_DB,
       autoLoadModels: true,
       logging: false,
-      synchronize: true
+      synchronize: true,
     }),
     AdminModule,
     OrderModule,
