@@ -15,8 +15,6 @@ export class OperationService {
     @InjectBot('akmal_express_bot') private readonly bot: Telegraf,
   ) {}
 
-  makeDateAndTime() {}
-
   async create(createOperationDto: CreateOperationDto) {
     if (+createOperationDto.status > 2) {
       throw new HttpException('Incorrect status', HttpStatus.BAD_REQUEST);
@@ -50,7 +48,8 @@ export class OperationService {
         }),
       );
 
-      const date = createdOperation.dataValues.order.createdAt
+    const date = createdOperation.dataValues.createdAt;
+
     if (createOperationDto.status === '0') {
       await this.bot.telegram.sendMessage(
         process.env.CHAT_ID,
@@ -110,38 +109,6 @@ export class OperationService {
       throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
     }
     return operation;
-  }
-
-  async findStatus(status: string, pageNumber: number) {
-    const PAGE_SIZE = 10;
-    const offset = (pageNumber - 1) * PAGE_SIZE;
-
-    const records = await this.operationModel.findAll({
-      where: { status },
-      limit: PAGE_SIZE,
-      offset: offset,
-      order: [['id', 'ASC']],
-      include: [
-        { model: Order },
-        {
-          model: Admin,
-          attributes: { exclude: ['hashed_password', 'hashed_token'] },
-        },
-      ],
-    });
-
-    const totalCount = await this.operationModel.count();
-
-    const totalPages = Math.ceil(totalCount / PAGE_SIZE);
-
-    return {
-      records: records,
-      pagination: {
-        currentPage: pageNumber,
-        totalPages: totalPages,
-        totalCount: totalCount,
-      },
-    };
   }
 
   async update(id: number, updateOperationDto: UpdateOperationDto) {
