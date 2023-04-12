@@ -7,7 +7,6 @@ import { Op } from 'sequelize';
 import { FromToOrderSearchDto } from './dto/from-to-order-date-search.dto';
 import { Operation } from '../operation/entities/operation.entity';
 import { Admin } from '../admin/entities/admin.entity';
-import { filter } from 'rxjs';
 
 @Injectable()
 export class OrderService {
@@ -185,7 +184,6 @@ export class OrderService {
     const PAGE_SIZE = 10;
     const offset = (pageNumber - 1) * PAGE_SIZE;
 
-    console.log(from, to);
     const order = await this.orderModel.findAll({
       where: {
         createdAt: {
@@ -206,10 +204,9 @@ export class OrderService {
         ],
       },
     });
-    console.log(order);
-    console.log(order.length);
+
     if (!order.length) {
-      throw new HttpException('Not found111111111111', HttpStatus.NOT_FOUND);
+      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
     }
 
     const totalCount = await this.orderModel.count({
