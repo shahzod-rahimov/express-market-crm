@@ -66,7 +66,7 @@ export class OrderController {
   @ApiOperation({ summary: 'Get order by date' })
   @ApiResponse({ status: 200, type: [Order] })
   @UseGuards(IsActiveGuard)
-  @Get('/search/bydate?')
+  @Post('/search/bydate?')
   findByDate(
     @Query('page') pageNumber: string,
     @Body() fromToOrderSearchDto: FromToOrderSearchDto,
