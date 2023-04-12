@@ -55,9 +55,9 @@ export class OrderController {
     return this.orderService.findByName(name, +pageNumber);
   }
 
-  @Public()
   @ApiOperation({ summary: 'Get order by unique ID' })
   @ApiResponse({ status: 200, type: Order })
+  @UseGuards(IsActiveGuard)
   @Get('/search/byuniqueid?')
   findByOrderUniqueId(@Query('id') id: string) {
     return this.orderService.findByOrderUniqueId(id);
@@ -76,7 +76,6 @@ export class OrderController {
 
   @ApiOperation({ summary: 'Update order' })
   @ApiResponse({ status: 200, description: 'Updated' })
-  @UseGuards(CreatorGuard)
   @UseGuards(IsActiveGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {

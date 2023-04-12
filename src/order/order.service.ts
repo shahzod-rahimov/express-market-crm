@@ -371,15 +371,20 @@ export class OrderService {
   async getOrderUniqueId(unique_id: string) {
     const order = await this.orderModel.findOne({
       where: { order_unique_id: unique_id },
-      attributes: ['order_unique_id'],
       include: {
         model: Operation,
-        attributes: ['status', 'createdAt'],
+        attributes: { exclude: ['admin_id', 'order_id'] },
+        include: [
+          {
+            model: Admin,
+            attributes: { exclude: ['hashed_password', 'hashed_token'] },
+          },
+        ],
       },
     });
 
     if (!order) throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
-    
+
     return order;
   }
 }
