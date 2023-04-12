@@ -7,13 +7,81 @@ import { Op } from 'sequelize';
 import { FromToOrderSearchDto } from './dto/from-to-order-date-search.dto';
 import { Operation } from '../operation/entities/operation.entity';
 import { Admin } from '../admin/entities/admin.entity';
+import { InjectBot } from 'nestjs-telegraf';
+import { Telegraf } from 'telegraf';
+import * as cron from 'node-cron';
 
 @Injectable()
 export class OrderService {
-  constructor(@InjectModel(Order) private orderModel: typeof Order) {}
+  constructor(
+    @InjectModel(Order) private orderModel: typeof Order,
+    @InjectBot('akmal_express_bot') private readonly bot: Telegraf,
+  ) {
+    cron.schedule('0 6 * * *', () => {
+      this.isOrderExpired();
+    });
+  }
+
+  async isOrderExpired() {
+    const orders = await this.orderModel
+      .findAll({
+        include: {
+          model: Operation,
+          limit: 2,
+          order: [['id', 'DESC']],
+          include: [
+            {
+              model: Admin,
+              attributes: { exclude: ['hashed_password', 'hashed_token'] },
+            },
+          ],
+        },
+      })
+      .then((orders) => {
+        const filtered = orders.filter((order) => {
+          const operation = order.operation;
+          return operation[0].status == '0' || operation[0].status == '1';
+        });
+
+        return filtered;
+      });
+
+    for (let order of orders) {
+      const operation = order.operation;
+      const now = new Date();
+      const date = operation[operation.length - 1].createdAt;
+      const feature = new Date(date.getTime() + 90 * 24 * 60 * 60 * 1000);
+
+      if (
+        feature.getDate() == now.getDate() &&
+        feature.getMonth() + 1 == now.getMonth() + 1 &&
+        feature.getFullYear() == now.getFullYear()
+      ) {
+        await this.bot.telegram.sendMessage(
+          process.env.CHAT_ID,
+          `❗️<b>Diqqat buyurtma vaqti 90 kundan o'tib ketti</b>\n\n<b>📦 Buyurtma : 🆔</b> ${
+            order.order_unique_id
+          }\n\n<b>👤 Buyurtmachi: </b>${order.full_name}\n\n<b>📱 Tel: </b>${
+            order.phone_number
+          }\n\n<b>🔗 Buyurtma linki: </b><a href="${order.product_link}">${
+            order.product_link
+          }</a>\n\n<b>Qabul qilingan sana:</b> ${date.toLocaleDateString(
+            'uz-UZ',
+          )} ${date.toLocaleTimeString(
+            'uz-UZ',
+          )}\n\n<b>Qabul qilgan admin: </b>${
+            order.operation[0].admin.full_name
+          }`,
+          {
+            parse_mode: 'HTML',
+          },
+        );
+      }
+    }
+  }
 
   getUniqueID(id: number) {
-    const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+    const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
     const length = letters.length;
 
     return `${letters[this.getRandomNumber(length)]}${

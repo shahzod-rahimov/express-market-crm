@@ -15,9 +15,7 @@ export class OperationService {
     @InjectBot('akmal_express_bot') private readonly bot: Telegraf,
   ) {}
 
-  makeDateAndTime() {
-
-  }
+  makeDateAndTime() {}
 
   async create(createOperationDto: CreateOperationDto) {
     if (+createOperationDto.status > 2) {
@@ -52,7 +50,7 @@ export class OperationService {
         }),
       );
 
-    if (createOperationDto.status == '0') {
+    if (createOperationDto.status === '0') {
       await this.bot.telegram.sendMessage(
         process.env.CHAT_ID,
         `<b>Yangi buyurtmani kutib oling!</b>\n\n📆 Qabul qilindi : ${createdOperation.dataValues.order.createdAt}\n📦 Buyurtma : 🆔 #${createdOperation.dataValues.order.order_unique_id}\n💴 Buyurtma narxi: ${createdOperation.dataValues.order.summa}\n👤 Buyurtmachi: ${createdOperation.dataValues.order.full_name}\n📱 Tel: ${createdOperation.dataValues.order.phone_number}\n----------------------\n💴 Oldindan to'lov: ${createdOperation.dataValues.order.advance_payment}\n🔗 Buyurtma linki: <a href="${createdOperation.dataValues.order.product_link}">${createdOperation.dataValues.order.product_link}</a>\n\n😎 Qabul qildi: ${createdOperation.dataValues.admin.full_name}`,
