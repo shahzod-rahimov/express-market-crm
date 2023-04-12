@@ -7,6 +7,7 @@ import { Op } from 'sequelize';
 import { FromToOrderSearchDto } from './dto/from-to-order-date-search.dto';
 import { Operation } from '../operation/entities/operation.entity';
 import { Admin } from '../admin/entities/admin.entity';
+import { filter } from 'rxjs';
 
 @Injectable()
 export class OrderService {
@@ -248,10 +249,17 @@ export class OrderService {
       .then((orders) => {
         const filtered = orders.filter((order) => {
           const operation = order.operation;
-          return operation[operation.length - 1].status == status;
+          return operation[0].status == status;
         });
 
-        return filtered;
+        return {
+          records: filtered,
+          pagination: {
+            currentPage: pageNumber,
+            totalPages: Math.ceil(filtered.length / pageSize),
+            totalCount: filtered.length,
+          },
+        };
       });
 
     return orders;
@@ -271,7 +279,7 @@ export class OrderService {
 
   async statistikaOrder(date) {
     try {
-      console.log(new Date(this.addDays(date)));
+      // console.log(new Date(this.addDays(date)));
       let result = { days: [], order: [] };
       for (let i = 0; i < 30; i++) {
         const resl = await this.orderModel.findAll({
