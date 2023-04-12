@@ -185,6 +185,7 @@ export class OrderService {
     const PAGE_SIZE = 10;
     const offset = (pageNumber - 1) * PAGE_SIZE;
 
+    console.log(from, to);
     const order = await this.orderModel.findAll({
       where: {
         createdAt: {
