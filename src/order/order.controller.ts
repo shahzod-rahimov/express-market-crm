@@ -103,6 +103,14 @@ export class OrderController {
     return this.orderService.findOrderOperation(status, +pageNumber);
   }
 
+  @ApiOperation({ summary: 'Get order' })
+  @ApiResponse({ status: 200, description: 'Get order by unique ID' })
+  @Public()
+  @Get('search/:unique_id')
+  getOrderUniqueIdPublic(@Param('unique_id') id: string) {
+    return this.orderService.getOrderUniqueId(id);
+  }
+
   @ApiOperation({ summary: 'Create order' })
   @ApiResponse({ status: 201, type: Order })
   @UseGuards(IsActiveGuard)

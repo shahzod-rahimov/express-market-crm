@@ -367,4 +367,19 @@ export class OrderService {
       console.log(error);
     }
   }
+
+  async getOrderUniqueId(unique_id: string) {
+    const order = await this.orderModel.findOne({
+      where: { order_unique_id: unique_id },
+      attributes: ['order_unique_id'],
+      include: {
+        model: Operation,
+        attributes: ['status', 'createdAt'],
+      },
+    });
+
+    if (!order) throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    
+    return order;
+  }
 }
