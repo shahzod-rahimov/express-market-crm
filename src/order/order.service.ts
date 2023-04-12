@@ -205,9 +205,10 @@ export class OrderService {
         ],
       },
     });
-
+    console.log(order);
+    console.log(order.length);
     if (!order.length) {
-      throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+      throw new HttpException('Not found111111111111', HttpStatus.NOT_FOUND);
     }
 
     const totalCount = await this.orderModel.count({
