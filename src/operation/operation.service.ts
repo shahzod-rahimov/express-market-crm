@@ -5,14 +5,25 @@ import { UpdateOperationDto } from './dto/update-operation.dto';
 import { Operation } from './entities/operation.entity';
 import { Admin } from '../admin/entities/admin.entity';
 import { Order } from '../order/entities/order.entity';
+import { InjectBot } from 'nestjs-telegraf';
+import { Telegraf } from 'telegraf';
 
 @Injectable()
 export class OperationService {
   constructor(
     @InjectModel(Operation) private operationModel: typeof Operation,
+    @InjectBot('akmal_express_bot') private readonly bot: Telegraf,
   ) {}
 
+  makeDateAndTime() {
+
+  }
+
   async create(createOperationDto: CreateOperationDto) {
+    if (+createOperationDto.status > 2) {
+      throw new HttpException('Incorrect status', HttpStatus.BAD_REQUEST);
+    }
+
     const isStatusExist = await this.operationModel.findOne({
       where: {
         status: createOperationDto.status,
@@ -41,6 +52,15 @@ export class OperationService {
         }),
       );
 
+    if (createOperationDto.status == '0') {
+      await this.bot.telegram.sendMessage(
+        process.env.CHAT_ID,
+        `<b>Yangi buyurtmani kutib oling!</b>\n\n📆 Qabul qilindi : ${createdOperation.dataValues.order.createdAt}\n📦 Buyurtma : 🆔 #${createdOperation.dataValues.order.order_unique_id}\n💴 Buyurtma narxi: ${createdOperation.dataValues.order.summa}\n👤 Buyurtmachi: ${createdOperation.dataValues.order.full_name}\n📱 Tel: ${createdOperation.dataValues.order.phone_number}\n----------------------\n💴 Oldindan to'lov: ${createdOperation.dataValues.order.advance_payment}\n🔗 Buyurtma linki: <a href="${createdOperation.dataValues.order.product_link}">${createdOperation.dataValues.order.product_link}</a>\n\n😎 Qabul qildi: ${createdOperation.dataValues.admin.full_name}`,
+        {
+          parse_mode: 'HTML',
+        },
+      );
+    }
     return createdOperation;
   }
 

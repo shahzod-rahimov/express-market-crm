@@ -41,7 +41,7 @@ export class OrderService {
     const records = await this.orderModel.findAll({
       limit: PAGE_SIZE,
       offset: offset,
-      order: [['id', 'ASC']],
+      order: [['createdAt', 'DESC']],
       include: {
         model: Operation,
         attributes: { exclude: ['order_id'] },
@@ -120,6 +120,7 @@ export class OrderService {
       where: { full_name: { [Op.iLike]: `%${name}%` } },
       limit: PAGE_SIZE,
       offset,
+      order: [['createdAt', 'DESC']],
       include: {
         model: Operation,
         attributes: { exclude: ['order_id'] },
@@ -191,6 +192,7 @@ export class OrderService {
       },
       limit: PAGE_SIZE,
       offset,
+      order: [['createdAt', 'DESC']],
       include: {
         model: Operation,
         attributes: { exclude: ['admin_id', 'order_id'] },
@@ -229,11 +231,12 @@ export class OrderService {
       .findAll({
         limit: pageSize,
         offset: (pageNumber - 1) * pageSize,
+        order: [['createdAt', 'DESC']],
         include: {
           model: Operation,
-          limit: 3,
-          order: [['createdAt', 'DESC']],
+          limit: 1,
           attributes: { exclude: ['order_id'] },
+          order: [['id', 'DESC']],
           include: [
             {
               model: Admin,
@@ -245,8 +248,7 @@ export class OrderService {
       .then((orders) => {
         const filtered = orders.filter((order) => {
           const operation = order.operation;
-          return operation;
-          // return operation[0].status == status;
+          return operation[operation.length - 1].status == status;
         });
 
         return filtered;

@@ -10,15 +10,15 @@ import { APP_GUARD } from '@nestjs/core';
 import { TelegrafModule } from 'nestjs-telegraf';
 @Module({
   imports: [
-    // TelegrafModule.forRootAsync({
-    //   botName: 'akmal_express-bot',
-    //   useFactory: () => ({
-    //     token: process.env.BOT_TOKEN,
-    //     middlewares: [],
-    //     include: [],
-    //   }),
-    // }),
     ConfigModule.forRoot({ envFilePath: `.env` }),
+    TelegrafModule.forRootAsync({
+      botName: 'akmal_express_bot',
+      useFactory: () => ({
+        token: process.env.BOT_TOKEN,
+        middlewares: [],
+        include: [],
+      }),
+    }),
     SequelizeModule.forRoot({
       dialect: 'postgres',
       host: process.env.POSTGRES_HOST,
