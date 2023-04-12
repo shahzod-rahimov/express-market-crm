@@ -230,8 +230,8 @@ export class OrderService {
     const pageSize = 10;
     const orders = await this.orderModel
       .findAll({
-        limit: pageSize,
-        offset: (pageNumber - 1) * pageSize,
+        // limit: pageSize,
+        // offset: (pageNumber - 1) * pageSize,
         order: [['createdAt', 'DESC']],
         include: {
           model: Operation,
