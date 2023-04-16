@@ -18,6 +18,7 @@ import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { Admin } from './entities/admin.entity';
 import { CheckTokenDto } from './dto/check-token.dto';
+import { Public } from '../common/decorators';
 
 @ApiTags('Admin')
 @Controller('admin')
@@ -80,8 +81,7 @@ export class AdminController {
 
   @ApiOperation({ summary: 'Check token' })
   @ApiResponse({ status: 200, type: Admin })
-  @HttpCode(200)
-  @UseGuards(IsActiveGuard)
+  @Public()
   @Post('check-token')
   checkToken(@Body() checkTokenDto: CheckTokenDto) {
     return this.adminService.checkToken(checkTokenDto);
